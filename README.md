@@ -20,10 +20,10 @@ There are two possible ways to submit your project. Your instructor should have 
 
 #### Option B - Pull Request
 
-- [ ] Fork and clone the repository.
-- [ ] Implement your project in a `firstname-lastname` branch.
-- [ ] Create a pull request of `firstname-lastname` against your `main` branch.
-- [ ] Open the assignment in Canvas and submit your pull request.
+- [x] Fork and clone the repository.
+- [x] Implement your project in a `firstname-lastname` branch.
+- [x] Create a pull request of `firstname-lastname` against your `main` branch.
+- [x] Open the assignment in Canvas and submit your pull request.
 
 ### Task 2: Minimum Viable Product
 
@@ -33,15 +33,15 @@ You will complete the following tasks and do any extra wiring and package instal
 
 Write the following user access functions inside `api/users/users-model.js`:
 
-- [ ] `find`
-- [ ] `findBy`
-- [ ] `findById`
+- [x] `find`
+- [x] `findBy`
+- [x] `findById`
 
 #### 2B - Middleware Functions
 
 Write the following auth middlewares inside `api/auth/auth-middleware.js`:
 
-- [ ] `restricted`
+- [x] `restricted`
 - [ ] `only`
 - [ ] `checkUsernameExists`
 - [ ] `validateRoleName`
