@@ -74,19 +74,25 @@ const checkUsernameExists = async (req, res, next) => {
   */
 
 const validateRoleName = async (req, res, next) => {
-  let desiredRole = req.body.role_name;
-  if (desiredRole) {
-    if (desiredRole.trim() === "admin") {
-      res.status(422).json({ message: "role can not be admin" });
-    } else if (desiredRole.trim().length > 32) {
-      res
-        .status(422)
-        .json({ message: "Role name can not be longer than 32 characters" });
-    }
- 
+  if (!req.body.username || !req.body.password) {
+    res.status(400).json({
+      message: "must contain a username, password and optional role_name",
+    });
   } else {
-    req.body.role_name = "student";
-    next();
+    if (req.body.role_name) {
+      if (req.body.role_name.trim() === "admin") {
+        res.status(422).json({ message: "role can not be admin" });
+      } else if (req.body.role_name.trim().length > 32) {
+        res
+          .status(422)
+          .json({ message: "Role name can not be longer than 32 characters" });
+      } else if (!req.body.role_name || req.body.role_name.trim() === "") {
+        req.body.role_name = "student";
+        next();
+      }
+    } else {
+      next();
+    }
   }
 };
 /*

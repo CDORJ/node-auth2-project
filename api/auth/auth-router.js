@@ -1,16 +1,21 @@
 const router = require("express").Router();
+const jwt = require("jsonwebtoken");
+
 const {
   validateRoleName,
   checkUsernameExists,
 } = require("./auth-middleware.js");
+
 const { JWT_SECRET } = require("../secrets"); // use this secret!
 const bcrypt = require("bcryptjs");
 const User = require("../users/users-model.js");
 
 router.post("/register", validateRoleName, async (req, res, next) => {
-  const { username, password, role_name } = req.body;
+  const user = req.body;
+  let hash = bcrypt.hashSync(user.password, 15);
+  user.password = hash;
   try {
-    const newUser = await User.add({ username, password, role_name }); 
+    const newUser = await User.add(user);
     res.status(201).json(newUser);
   } catch (err) {
     next(err);
