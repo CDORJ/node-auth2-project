@@ -33,8 +33,40 @@ router.post("/register", validateRoleName, async (req, res, next) => {
     }
     */
 
-// router.post("/login", checkUsernameExists, (req, res, next) => {
-//   /**
+router.post("/login", checkUsernameExists, async (req, res, next) => {
+  const { username, password } = req.body;
+  try {
+    const user = await User.findBy({ username }).first();
+    if (user && bcrypt.compareSync(password, user.password)) {
+      const token = generateToken(user);
+      res.status(200).json({ user, token });
+    } else {
+      res.status(401).json({ message: "invalid credentials" });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+function generateToken(user) {
+  const payload = {
+    sub: user.user_id,
+    username: user.username,
+    role_name: user.role_id,
+  };
+
+  const options = {
+    expiresIn: "1h",
+  };
+
+  const secrete = JWT_SECRET;
+
+  return jwt.sign(payload, secrete, options);
+}
+
+module.exports = router;
+
+/**
 //     [POST] /api/auth/login { "username": "sue", "password": "1234" }
 
 //     response:
@@ -54,5 +86,3 @@ router.post("/register", validateRoleName, async (req, res, next) => {
 //     }
 //    */
 // });
-
-module.exports = router;
