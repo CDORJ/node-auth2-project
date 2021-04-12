@@ -11,6 +11,18 @@ const bcrypt = require("bcryptjs");
 const User = require("../users/users-model.js");
 
 router.post("/register", validateRoleName, async (req, res, next) => {
+  const credentials = req.body;
+  try {
+    const hash = bcrypt.hashSync(credentials.password, 10);
+    credentials.password = hash;
+    const user = await User.add(credentials);
+    res.status(201).json(user);
+  } catch (err) {
+    next(err);
+  }
+});
+
+/* router.post("/register", validateRoleName, async (req, res, next) => {
   const user = req.body;
   let hash = bcrypt.hashSync(user.password, 15);
   user.password = hash;
@@ -20,7 +32,7 @@ router.post("/register", validateRoleName, async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-});
+}); */
 /**
    [POST] /api/auth/register { "username": "anna", "password": "1234", "role_name": "angel" }
    

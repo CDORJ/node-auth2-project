@@ -59,7 +59,7 @@ const checkUsernameExists = async (req, res, next) => {
     if (user.length > 0) {
       next();
     } else {
-      res.status(401).json({ message: "Invalid Credentials" });
+      res.status(401).json({ message: "Invalid Creds" });
     }
   } catch (err) {
     next(err);
@@ -73,28 +73,51 @@ const checkUsernameExists = async (req, res, next) => {
     }
   */
 
-const validateRoleName = async (req, res, next) => {
+const validateRoleName = (req, res, next) => {
   if (!req.body.username || !req.body.password) {
     res.status(400).json({
       message: "must contain a username, password and optional role_name",
     });
   } else {
-    if (req.body.role_name) {
-      if (req.body.role_name.trim() === "admin") {
+    let desiredRole = req.body.role_name;
+    if (desiredRole) {
+      if (desiredRole.trim() === "admin") {
         res.status(422).json({ message: "role can not be admin" });
-      } else if (req.body.role_name.trim().length > 32) {
+      } else if (desiredRole.trim().length > 32) {
         res
           .status(422)
           .json({ message: "Role name can not be longer than 32 characters" });
-      } else if (!req.body.role_name || req.body.role_name.trim() === "") {
-        req.body.role_name = "student";
-        next();
       }
-    } else {
+    } else if (!desiredRole || desiredRole === "") {
+      req.body.role_name = "student";
       next();
     }
   }
 };
+/* const validateRoleName = async (req, res, next) => {
+  try {
+    let { role_name } = req.body;
+    const isValid = (role_name) => {
+      return Boolean(role_name && typeof role_name === "string");
+    };
+    if (!req.body.role_name || req.body.role_name === " ") {
+      req.body.role_name = "student";
+      next();
+    } else if (isValid(role_name)) {
+      req.body.role_name = role_name.trim();
+      if (req.body.role_name === "admin") {
+        res.status(422).json({ message: "Role can not be admin" });
+      } else if (req.body.role_name.length > 32) {
+        res.status(422).json({
+          message: "Role name can not be longer than 32 chars",
+        });
+      }
+      next();
+    }
+  } catch (err) {
+    next(err);
+  }
+}; */
 /*
     If the role_name in the body is valid, set req.role_name to be the trimmed string and proceed.
 
