@@ -73,14 +73,17 @@ const checkUsernameExists = async (req, res, next) => {
     }
   */
 
-const validateRoleName = (req, res, next) => {
+/* const validateRoleName = (req, res, next) => {
   if (!req.body.username || !req.body.password) {
     res.status(400).json({
       message: "must contain a username, password and optional role_name",
     });
   } else {
     let desiredRole = req.body.role_name;
-    if (desiredRole) {
+    const isValid = (role_name) => {
+      return Boolean(role_name && typeof role_name === "string");
+    };
+    if (isValid(desiredRole)) {
       if (desiredRole.trim() === "admin") {
         res.status(422).json({ message: "role can not be admin" });
       } else if (desiredRole.trim().length > 32) {
@@ -93,8 +96,14 @@ const validateRoleName = (req, res, next) => {
       next();
     }
   }
-};
-/* const validateRoleName = async (req, res, next) => {
+}; */
+const validateRoleName = async (req, res, next) => {
+  if (!req.body.username || !req.body.password) {
+    res.status(400).json({
+      message:
+        "must have a username and password to register. optional: role_name .",
+    });
+  }
   try {
     let { role_name } = req.body;
     const isValid = (role_name) => {
@@ -104,20 +113,20 @@ const validateRoleName = (req, res, next) => {
       req.body.role_name = "student";
       next();
     } else if (isValid(role_name)) {
-      req.body.role_name = role_name.trim();
-      if (req.body.role_name === "admin") {
+      if (req.body.role_name.trim() === "admin") {
         res.status(422).json({ message: "Role can not be admin" });
-      } else if (req.body.role_name.length > 32) {
+      } else if (req.body.role_name.trim().length > 32) {
         res.status(422).json({
           message: "Role name can not be longer than 32 chars",
         });
+      } else {
+        next();
       }
-      next();
     }
   } catch (err) {
     next(err);
   }
-}; */
+};
 /*
     If the role_name in the body is valid, set req.role_name to be the trimmed string and proceed.
 
