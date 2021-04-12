@@ -1,12 +1,11 @@
-const { secret } = require("../secrets"); // use this secret!
+const { JWT_SECRET } = require("../secrets"); // use this secret!
 const jwt = require("jsonwebtoken");
 const Users = require("../users/users-model.js");
-const { typeOf } = require("react-is");
 
 const restricted = (req, res, next) => {
   const token = req.headers?.authorization?.split(" ")[1];
   if (token) {
-    jwt.verify(token, secret, (err, decodedToken) => {
+    jwt.verify(token, JWT_SECRET, (err, decodedToken) => {
       if (err) {
         res.status(401).json({ message: "Error logging in" });
       } else {
@@ -36,8 +35,7 @@ const restricted = (req, res, next) => {
   */
 
 const only = (role_name) => (req, res, next) => {
-  const reqRole = req.decodedToken?.role;
-  if (reqRole === role_name) {
+  if ((req.decodedToken?.role_name || "") === role_name) {
     next();
   } else {
     res.status(403).json({ message: "This is not for you!" });
@@ -89,7 +87,7 @@ const validateRoleName = async (req, res, next) => {
       return Boolean(role && typeof role === "string");
     };
     if (!req.body.role_name || req.body.role_name === " ") {
-      req.body.role_name = "student";
+      req.body.role_name = "student".trim();
       next();
     } else if (isValid(role_name)) {
       if (req.body.role_name.trim() === "admin") {
