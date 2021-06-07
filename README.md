@@ -53,12 +53,12 @@ Authentication will be implemented using JSON Web Tokens.
 Write the following endpoints inside `api/auth/auth-router.js`:
 
 - [x] `[POST] /api/auth/register`
-- [ ] `[POST] /api/auth/login`
+- [x] `[POST] /api/auth/login`
 
 The endpoints inside `api/users/users-router.js` are built already but check them out:
 
-- [ ] `[GET] /api/users` - only users with a valid token can access
-- [ ] `[POST] /api/auth/login` - only users with a role of 'admin' can access
+- [x] `[GET] /api/users` - only users with a valid token can access
+- [x] `[POST] /api/auth/login` - only users with a role of 'admin' can access
 
 #### 2D - Secrets File
 
